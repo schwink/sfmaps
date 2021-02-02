@@ -8,7 +8,7 @@ def run_magick(args):
     print(args)
     subprocess.run(['/usr/local/bin/magick'] + args)
 
-def crop(path_in, path_out, bottom, left, right):
+def crop(path_in, path_out, bottom, left, right, rotate=0):
     # bottom: pixels bottom edge to 37 degrees 45 minutes north
     # left: pixels left edge to 122 degrees 30 seconds west
     # right: pixels right edge to 122 degrees 22 minutes 30 seconds west
@@ -30,18 +30,25 @@ def crop(path_in, path_out, bottom, left, right):
     crop_x = left - (3 * pixels_per_minute_latitude)
     crop_width = pixels_per_minute_latitude * 25
 
-    run_magick([
+    args = [
         'convert',
         path_in,
         '-gravity',
         'SouthWest',
+    ]
+
+    if rotate != 0:
+        args = args + ['-rotate', '{}'.format(rotate)]
+
+    args = args + [
         '-crop',
         '{}x{}+{}+{}'.format(crop_width, crop_width, crop_x, bottom),
         '+repage',
         '-resize',
         '{}x{}'.format(1920, 1920),
         path_out
-    ])
+    ]
+    run_magick(args)
 
 # First knit together the 1993 map
 run_magick([
@@ -102,3 +109,25 @@ crop(
     right=0
 )
 
+crop(
+    'originals/CA_San Francisco_298889_1895_62500.jpg',
+    'CA_San Francisco_298889_1895_62500.jpg',
+    bottom=195,
+    left=216,
+    right=1276
+)
+crop(
+    'originals/CA_San Francisco_298890_1899_62500.jpg',
+    'CA_San Francisco_298890_1899_62500.jpg',
+    bottom=206,
+    left=243,
+    right=1280,
+    rotate=-0.15
+)
+crop(
+    'originals/CA_San Francisco_298896_1915_62500.jpg',
+    'CA_San Francisco_298896_1915_62500.jpg',
+    bottom=182,
+    left=308,
+    right=1232
+)
