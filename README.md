@@ -22,5 +22,9 @@ To pull overlapping areas from the source maps, try this:
 
 You can append cropped images horizontally with e.g.
 ```
-magick 1899.jpg 1947.jpg 1993.jpg +smush +8  mission_rock.jpg
+magick 1899.jpg 1947.jpg 1993.jpg +smush +8 mission_rock.jpg
+```
+and vertically with
+```
+magick 1899.jpg 1947.jpg 1993.jpg -smush +8 north_beach.jpg
 ```
