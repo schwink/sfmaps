@@ -10,7 +10,7 @@ def run_magick(args):
     print(args)
     subprocess.run(['magick'] + args)
 
-def crop(path_in, path_out, left, top, width, height):
+def crop(path_in, path_out, left, top, width, height, caption=None):
     # The images being selected from have dimensions 1920x1920
     # left, top: Coordinates (from the top left corner) of the top left corner of the crop in pixels
     # width, height: Dimensions of the crop in pixels
@@ -24,6 +24,22 @@ def crop(path_in, path_out, left, top, width, height):
         '-crop',
         '{}x{}!+{}+{}'.format(width, height, left, top),
         '+repage',
+    ]
+
+    if caption:
+        args += [
+            '-pointsize',
+            '16',
+            '-undercolor',
+            'white',
+            '-fill',
+            'black',
+            '-annotate',
+            '+4+4',
+            caption,
+        ]
+        
+    args += [
         path_out
     ]
     run_magick(args)
@@ -57,7 +73,15 @@ def main():
     for (year, image) in IMAGES.items():
         input_path = image
         output_path = '{}/{}.jpg'.format(args.output_dir, year)
-        crop(input_path, output_path, args.left, args.top, args.width, args.height)
+        crop(
+            input_path,
+            output_path,
+            args.left,
+            args.top,
+            args.width,
+            args.height,
+            caption=year
+        )
 
 
 if __name__ == '__main__':
